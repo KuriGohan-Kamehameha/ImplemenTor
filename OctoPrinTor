@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Update package list and install Tor
+sudo apt update
+sudo apt install -y tor
+
+# Configure Tor hidden services for port forwarding
+sudo bash -c 'cat <<EOF >> /etc/tor/torrc
+HiddenServiceDir /var/lib/tor/hidden_service_80/
+HiddenServicePort 80 127.0.0.1:5000
+EOF'
+
+sudo bash -c 'cat <<EOF >> /etc/tor/torrc
+HiddenServiceDir /var/lib/tor/hidden_service_81/
+HiddenServicePort 81 127.0.0.1:8080
+EOF'
+
+# Restart Tor to apply changes
+sudo systemctl restart tor
+
+# Retrieve and display the generated Tor onion addresses
+echo "Waiting for Tor to establish the hidden services..."
+sleep 10  # Wait for Tor to establish the hidden services
+
+onion_address_80=$(sudo cat /var/lib/tor/hidden_service_80/hostname)
+onion_address_81=$(sudo cat /var/lib/tor/hidden_service_81/hostname)
+
+echo "Your Tor onion address for port 80 (127.0.0.1:5000) is: $onion_address_80"
+echo "Your Tor onion address for port 81 (127.0.0.1:8080) is: $onion_address_81"
+
+# Provide instructions for accessing the Tor onion services
+echo "You can now access your Tor onion services:"
+echo "http://$onion_address_80/ (port 80)"
+echo "http://$onion_address_81/ (port 81)"
