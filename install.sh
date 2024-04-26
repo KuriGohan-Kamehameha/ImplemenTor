@@ -1,6 +1,7 @@
 #!/bin/bash
 # Update system and install needed package(s)
-sudo apt-get update -y && sudo apt-get full-upgrade -y && sudo apt-get install tor -y
+sudo apt-get update -y && sudo apt-get full-upgrade -y
+sudo apt-get install tor -y
 
 # Configure Tor hidden service for port 80 (HTTP)
 sudo bash -c 'cat <<EOF >> /etc/tor/torrc
